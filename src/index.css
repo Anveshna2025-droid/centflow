@@ -4,37 +4,138 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS Variables outside of layer to ensure they apply globally */
+:root {
+  /* LIGHT MODE (Orange/Blue Theme with Contrast) */
+  --cf-bg: #f1f5f9;          /* Slate 100 for better contrast against white cards */
+  --cf-surface: #ffffff;
+  --cf-border: #cbd5e1;      /* Slate 300 for visible borders */
+  --cf-hover: #e2e8f0;       /* Slate 200 */
+  --cf-accent: #f97316;      /* Orange 500 */
+  --cf-accent-glow: rgba(249, 115, 22, 0.2);
+  --cf-text: #0f172a;
+  --cf-muted: #64748b;
+  --cf-red: #ef4444;
+  --cf-green: #10b981;
+}
+
+html.dark {
+  /* DARK MODE (Orange/Blue Theme) */
+  --cf-bg: #0b1120;          /* Deep Royal Blue Background */
+  --cf-surface: #1e293b;     /* Slate 800 Surface */
+  --cf-border: #334155;
+  --cf-hover: #2dd4bf10;     
+  --cf-accent: #f97316;      /* Orange 500 */
+  --cf-accent-glow: rgba(249, 115, 22, 0.3);
+  --cf-text: #f8fafc;
+  --cf-muted: #94a3b8;
+  --cf-red: #f43f5e;
+  --cf-green: #10b981;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
-  background: #0a0a0f;
-  color: #e8e6e0;
+  background: var(--cf-bg);
+  color: var(--cf-text);
   font-family: 'Syne', sans-serif;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+@layer utilities {
+  .glass {
+    @apply bg-cf-surface backdrop-blur-md border border-cf-border shadow-sm;
+  }
+  
+  .glass-card {
+    @apply bg-cf-surface backdrop-blur-xl border border-cf-border shadow-md transition-all duration-300 hover:border-cf-accent;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 15px var(--cf-accent-glow);
+  }
+
+  .box-glow {
+    box-shadow: 0 0 20px var(--cf-accent-glow);
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--cf-border);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--cf-muted);
+  }
+}
 
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.25; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.2); }
 }
 
 .live-dot {
-  animation: pulse-dot 1.8s ease-in-out infinite;
+  animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 .fade-up {
-  animation: fade-up 0.4s ease both;
+  animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.slide-in {
+  animation: slide-in 0.4s ease-out both;
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(100px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ApexCharts Overrides for Dark Mode */
+.dark .apexcharts-tooltip {
+  background: var(--cf-surface) !important;
+  border: 1px solid var(--cf-border) !important;
+  color: var(--cf-text) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important;
+}
+.dark .apexcharts-tooltip-title {
+  background: var(--cf-bg) !important;
+  border-bottom: 1px solid var(--cf-border) !important;
+  font-family: 'Syne', sans-serif !important;
+}
+.dark .apexcharts-text {
+  fill: var(--cf-muted) !important;
+  font-family: 'Syne', sans-serif !important;
+}
+.dark .apexcharts-gridline {
+  stroke: var(--cf-border) !important;
+}
+
+/* ApexCharts Overrides for Light Mode */
+.apexcharts-tooltip {
+  font-family: 'Syne', sans-serif !important;
+  border-radius: 8px !important;
 }
